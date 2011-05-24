@@ -19,28 +19,6 @@
 
 if (window.WebSocket) {
     Websock_native = true;
-} else {
-    /* no builtin WebSocket so load web_socket.js */
-    Websock_native = false;
-    (function () {
-        function get_INCLUDE_URI() {
-            return (typeof INCLUDE_URI !== "undefined") ?
-                INCLUDE_URI : "include/";
-        }
-
-        var start = "<script src='" + get_INCLUDE_URI(),
-            end = "'><\/script>", extra = "";
-
-        WEB_SOCKET_SWF_LOCATION = get_INCLUDE_URI() +
-                    "web-socket-js/WebSocketMain.swf?" + Math.random();
-        if (Util.Engine.trident) {
-            Util.Debug("Forcing uncached load of WebSocketMain.swf");
-            WEB_SOCKET_SWF_LOCATION += "?" + Math.random();
-        }
-        extra += start + "web-socket-js/swfobject.js" + end;
-        extra += start + "web-socket-js/web_socket.js" + end;
-        document.write(extra);
-    }());
 }
 
 
@@ -250,16 +228,21 @@ function init() {
     websocket  = null;
 }
 
-function open(uri) {
+function open(uri, host, port, passport) {
     init();
+    console.log("Opening URI", uri);
 
-    websocket = new WebSocket(uri, 'base64');
+    websocket = new WebSocket(uri);
     // TODO: future native binary support
     //websocket = new WebSocket(uri, ['binary', 'base64']);
 
     websocket.onmessage = recv_message;
     websocket.onopen = function() {
         Util.Debug(">> WebSock.onopen");
+        var request = passport + ':' + host + ':' + port + ':';
+	      websocket.send(request);
+
+        
         if (websocket.protocol) {
             Util.Info("Server chose sub-protocol: " + websocket.protocol);
         }

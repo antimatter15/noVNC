@@ -43,7 +43,7 @@ Array.prototype.push32 = function (num) {
  * Logging/debug routines
  */
 
-Util._log_level = 'warn';
+Util._log_level = 'debug';
 Util.init_logging = function (level) {
     if (typeof level === 'undefined') {
         level = Util._log_level;

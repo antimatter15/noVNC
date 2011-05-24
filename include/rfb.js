@@ -265,7 +265,14 @@ function constructor() {
 
 function connect() {
     Util.Debug(">> RFB.connect");
+		chrome.webSocketProxyPrivate.getPassportForTCP(rfb_host, parseInt(rfb_port, 10), function(passport){
+			console.log("Got Passport");
+		  var proxy = "ws://127.0.0.1:10101/tcpproxy";
 
+	    Util.Info("connecting to " + proxy);
+			ws.open(proxy, rfb_host, rfb_port, passport);
+		});
+		/*
     var uri = "";
     if (conf.encrypt) {
         uri = "wss://";
@@ -276,7 +283,8 @@ function connect() {
     Util.Info("connecting to " + uri);
     ws.open(uri);
 
-    Util.Debug("<< RFB.connect");
+    ;*/
+    Util.Debug("<< RFB.connect")
 }
 
 // Initialize variables that are reset before each connection
